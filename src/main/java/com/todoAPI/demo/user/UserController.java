@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping(path="/user")
 public class UserController {
@@ -21,5 +23,16 @@ public class UserController {
     @GetMapping(path="/users")
     public @ResponseBody Iterable<User> getAllUsers(){
         return userRepository.findAll();
+
+    }
+
+    @GetMapping(path = "/{userId}")
+    public @ResponseBody User getUser(@PathVariable Integer userId){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 }
