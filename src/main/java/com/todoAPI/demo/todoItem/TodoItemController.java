@@ -21,17 +21,19 @@ public class TodoItemController {
         return todoItemRepository.findByUserId(userId);
     }
 
-    @PostMapping("/user/{userId}/todoItem/add")
+//    @GetMapping("/user/{userId}/todoItem/{todoId}")
+
+    @PostMapping(path="/user/{userId}/todoItem/add")
     public @ResponseBody String createTodoItemForUser(@PathVariable Integer userId, @RequestParam String message){
         TodoItem todoItem = new TodoItem();
         todoItem.setMessage(message);
         Optional<User> user = userRepository.findById(userId);
-        System.out.printf(String.valueOf(user.get()));
         if(user.isEmpty()){
-            return String.valueOf(userId);
+            return "Error";
         }
         todoItem.setUser(user.get());
         todoItemRepository.save(todoItem);
+        userRepository.save(user.get());
         return "Saved";
     }
 }

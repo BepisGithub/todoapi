@@ -1,5 +1,6 @@
 package com.todoAPI.demo.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.todoAPI.demo.todoItem.TodoItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,9 +19,10 @@ public class User {
     @Setter
     private String name;
 
+    @JsonManagedReference
     @Getter
     @Setter
-    @OneToMany()
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TodoItem> itemList;
 
 }

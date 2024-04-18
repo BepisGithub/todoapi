@@ -1,5 +1,6 @@
 package com.todoAPI.demo.todoItem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.todoAPI.demo.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,9 +16,10 @@ public class TodoItem {
     @Setter
     private String message;
 
+    @JsonBackReference
     @Getter
     @Setter
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 }
