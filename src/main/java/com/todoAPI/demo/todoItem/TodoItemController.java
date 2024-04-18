@@ -2,11 +2,16 @@ package com.todoAPI.demo.todoItem;
 
 import com.todoAPI.demo.user.User;
 import com.todoAPI.demo.user.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Controller
 public class TodoItemController {
@@ -21,7 +26,14 @@ public class TodoItemController {
         return todoItemRepository.findByUserId(userId);
     }
 
-//    @GetMapping("/user/{userId}/todoItem/{todoId}")
+    @GetMapping("/user/{userId}/todoItem/{todoId}")
+    public @ResponseBody TodoItem getTodoItemForUser(@PathVariable Integer userId, @PathVariable Integer todoId){
+        Optional<TodoItem> item = todoItemRepository.findById(todoId);
+        if(item.isEmpty()){
+            throw new ResponseStatusException(NOT_FOUND, "no todo item");
+        }
+        return item.get();
+    }
 
     @PostMapping(path="/user/{userId}/todoItem/add")
     public @ResponseBody String createTodoItemForUser(@PathVariable Integer userId, @RequestParam String message){
