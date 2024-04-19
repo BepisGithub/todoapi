@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Controller
@@ -19,6 +20,20 @@ public class TodoItemController {
     private TodoItemRepository todoItemRepository;
 
     @Autowired UserRepository userRepository;
+
+    @PostMapping(path="/user/{userId}/todoItem/add")
+    public @ResponseBody String createTodoItemForUser(@PathVariable Integer userId, @RequestParam String message){
+        TodoItem todoItem = new TodoItem();
+        todoItem.setMessage(message);
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return "Error";
+        }
+        todoItem.setUser(user.get());
+        todoItemRepository.save(todoItem);
+        userRepository.save(user.get());
+        return "Saved";
+    }
 
     @GetMapping("/user/{userId}/todoItem/all")
     public @ResponseBody Iterable<TodoItem> getAllTodoItemsForUser(@PathVariable Integer userId){
@@ -37,17 +52,27 @@ public class TodoItemController {
         return TodoItemDTOMapper.map(item.get());
     }
 
-    @PostMapping(path="/user/{userId}/todoItem/add")
-    public @ResponseBody String createTodoItemForUser(@PathVariable Integer userId, @RequestParam String message){
-        TodoItem todoItem = new TodoItem();
-        todoItem.setMessage(message);
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()){
-            return "Error";
+    @PutMapping("/user/{userId}/todoItem/{todoId}")
+    public @ResponseBody TodoItemDTO updateTodoItem(@PathVariable Integer userId, @PathVariable Integer todoId,
+                                                    @RequestParam String message){
+        Optional<TodoItem> todoItem = todoItemRepository.findById(todoId);
+        if(todoItem.isEmpty()){
+            throw new ResponseStatusException(NOT_FOUND, "no todo item");
         }
-        todoItem.setUser(user.get());
-        todoItemRepository.save(todoItem);
-        userRepository.save(user.get());
-        return "Saved";
+        if(!todoItem.get().getUser().getId().equals(userId)){
+            throw new ResponseStatusException(FORBIDDEN, "wrong userid");
+        }
+
+        todoItem.get().setMessage(message);
+        todoItemRepository.save(todoItem.get());
+
+        if(todoItemRepository.findById(todoId).get().getMessage().equals(message)){
+            return TodoItemDTOMapper.map(todoItem.get());
+        }
+
+        throw new RuntimeException("Error");
+
     }
+
+
 }
