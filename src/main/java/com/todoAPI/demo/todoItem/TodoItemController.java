@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -29,6 +30,9 @@ public class TodoItemController {
         Optional<TodoItem> item = todoItemRepository.findById(todoId);
         if(item.isEmpty()){
             throw new ResponseStatusException(NOT_FOUND, "no todo item");
+        }
+        if(!Objects.equals(item.get().getUser().getId(), userId)){
+            throw new ResponseStatusException(NOT_FOUND, "no todo item associate with user");
         }
         return TodoItemDTOMapper.map(item.get());
     }
