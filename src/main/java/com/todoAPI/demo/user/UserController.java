@@ -37,6 +37,26 @@ public class UserController {
         }
     }
 
+    @PutMapping(path = "/{userId}/update")
+    public @ResponseBody User updateUser(@PathVariable Integer userId, @RequestParam String name){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            throw new RuntimeException("User not found");
+        }
+
+        User newUser = user.get();
+
+        newUser.setName(name);
+
+        userRepository.save(newUser);
+
+        if(userRepository.findById(userId).get().getName().equals(name)){
+            return newUser;
+        }
+        throw new RuntimeException("Error");
+
+    }
+
     @DeleteMapping(path = "/{userId}/delete")
     public @ResponseBody String deleteUserById(@PathVariable Integer userId){
         userRepository.deleteById(userId);
