@@ -20,7 +20,7 @@ public class User {
     private String name;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true ,mappedBy = "user", fetch = FetchType.LAZY)
     private List<TodoItem> itemList;
 
 }

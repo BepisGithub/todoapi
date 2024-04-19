@@ -1,5 +1,6 @@
 package com.todoAPI.demo.user;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,14 @@ public class UserController {
         } else {
             throw new RuntimeException("User not found");
         }
+    }
+
+    @DeleteMapping(path = "/{userId}/delete")
+    public @ResponseBody String deleteUserById(@PathVariable Integer userId){
+        userRepository.deleteById(userId);
+        if(userRepository.existsById(userId)){
+            return "Failed";
+        }
+        return "Success";
     }
 }
