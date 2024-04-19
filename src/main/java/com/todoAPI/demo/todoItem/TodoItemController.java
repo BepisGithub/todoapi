@@ -52,7 +52,7 @@ public class TodoItemController {
         return TodoItemDTOMapper.map(item.get());
     }
 
-    @PutMapping("/user/{userId}/todoItem/{todoId}")
+    @PutMapping("/user/{userId}/todoItem/{todoId}/update")
     public @ResponseBody TodoItemDTO updateTodoItem(@PathVariable Integer userId, @PathVariable Integer todoId,
                                                     @RequestParam String message){
         Optional<TodoItem> todoItem = todoItemRepository.findById(todoId);
@@ -74,5 +74,13 @@ public class TodoItemController {
 
     }
 
+    @DeleteMapping(path="/user/{userId}/todoItem/{todoId}/delete")
+    public @ResponseBody String deleteUsersTodoItem(@PathVariable Integer userId, @PathVariable Integer todoId){
+        todoItemRepository.deleteById(todoId);
+        if(todoItemRepository.existsById(todoId)){
+            throw new RuntimeException("Error");
+        }
+        return "Success";
+    }
 
 }
