@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "\"user\"")
 public class User {
@@ -15,13 +17,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Getter
-    @Setter
     private String name;
 
     @JsonManagedReference
-    @Getter
-    @Setter
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TodoItem> itemList;
 
