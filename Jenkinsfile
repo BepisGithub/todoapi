@@ -39,13 +39,15 @@ pipeline {
             }
         }
 
-//         stage('Deploy to ECS') {
-//             steps {
-//                 script {
-//                     // Update ECS service to use the new image
-//                     sh "aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE_NAME} --force-new-deployment"
-//                 }
-//             }
-//         }
+        stage('Deploy to ECS') {
+            steps {
+                script {
+                    echo "ECS_CLUSTER = ${env.ECS_CLUSTER}"
+                    echo "ECS_SERVICE_NAME = ${env.ECS_SERVICE_NAME}"
+                    // Update ECS service to use the new image
+                    sh 'aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE_NAME --force-new-deployment'
+                }
+            }
+        }
     }
 }
