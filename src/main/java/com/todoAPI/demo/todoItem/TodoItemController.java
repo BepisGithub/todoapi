@@ -27,7 +27,7 @@ public class TodoItemController {
         todoItem.setMessage(message);
         Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()){
-            return "User not found";
+            return "Error";
         }
         todoItem.setUser(user.get());
         todoItemRepository.save(todoItem);
