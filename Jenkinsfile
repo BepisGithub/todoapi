@@ -33,13 +33,13 @@ pipeline {
             steps {
                 script {
                     // Login to AWS ECR
-                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                    sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY'
                     // Build the Docker image
-                    sh "docker build -t todoapi ."
+                    sh 'docker build -t todoapi .'
                     // Tag the Docker image
-                    sh "docker tag todoapi:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+                    sh 'docker tag todoapi:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'
                     // Push the image to AWS ECR
-                    sh "docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+                    sh 'docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'
                 }
             }
         }
