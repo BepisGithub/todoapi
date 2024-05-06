@@ -3,16 +3,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Define environment variables
-        ECR_REGISTRY = '${env.ECS_REGISTRY}'
-        ECR_REPOSITORY = '${env.ECR_REPOSITORY}'
-        IMAGE_TAG = 'latest'
-        ECS_CLUSTER = '${env.ECS_CLUSTER}'
-        ECS_SERVICE_NAME = '${env.ECS_SERVICE_NAME}'
-        AWS_REGION = '${env.AWS_REGION}'
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
@@ -33,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Login to AWS ECR
-                    sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY'
+                    sh 'aws ecr get-login-password --region $env.AWS_REGION | docker login --username AWS --password-stdin $env.ECR_REGISTRY'
                     // Build the Docker image
                     sh 'docker build -t todoapi .'
                     // Tag the Docker image
